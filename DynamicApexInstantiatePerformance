@@ -1,0 +1,20 @@
+String shareName = 'Case_EW1__Share';
+Map<String, Schema.SObjectType> globalDescibe = Schema.getGlobalDescribe();
+
+Integer start = Limits.getCpuTime();
+for(Integer i = 0; i < 10000; i++){
+    Sobject shareObj = (SObject) Type.forName('Schema.' + shareName).newInstance();
+}
+Integer stop = Limits.getCpuTime();
+Integer result = stop - start;
+System.debug('CPU time for Type ' + result); //cca 2000
+
+start = Limits.getCpuTime();
+for(Integer i = 0; i < 10000; i++) {
+    Sobject shareObj = globalDescibe.get(shareName).newSObject();
+}
+stop = Limits.getCpuTime();
+result = stop - start;
+System.debug('CPU time for Schema.Describe ' + result); //cca 80 
+
+//using cached describe is 25x faster for instantiation
